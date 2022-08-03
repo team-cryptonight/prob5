@@ -21,11 +21,11 @@ s_box = (
 
 def split_4bits(i: np.uint8) -> tuple[np.uint8, np.uint8]:
     high = i >> 4
-    low = i - high << 4
+    low = i - (high << 4)
     return high, low
 
 def merge_4bits(high: np.uint8, low: np.uint8) -> np.uint8:
-    return high << 4 + low
+    return (high << 4) + low
 
 def F(subPT: np.ndarray, subMK: np.ndarray) -> np.ndarray:
     for k in range(3):
