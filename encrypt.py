@@ -46,8 +46,6 @@ def mat_idx(row_id: int, col_id: int) -> int:
 
 def ShiftRow(PT: np.ndarray) -> np.ndarray:
     for row_id in range(4):
-        if row_id == 0:
-            continue
         row = [PT[mat_idx(row_id, col_id)] for col_id in range(4)]
         row = rotate(row, row_id)
         for col_id in range(4):

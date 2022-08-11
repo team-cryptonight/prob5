@@ -12,7 +12,7 @@ def main():
             subMK = np.array([k] * 4, dtype=np.uint8)
             o = encrypt.F(subPT, subMK)[2]
             outputs[i] = o
-        results[k] = np.cov(np.vstack((np.arange(256), outputs)))[0, 1]
+        results[k] = np.corrcoef(np.vstack((np.arange(256), outputs)))[0, 1]
     plt.plot(results, '.')
     plt.xlabel('key')
     plt.ylabel('covariance of input and output')
