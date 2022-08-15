@@ -1,4 +1,5 @@
 import numpy as np
+from typing import Tuple
 
 s_box = (
     0x63, 0x7C, 0x77, 0x7B, 0xF2, 0x6B, 0x6F, 0xC5, 0x30, 0x01, 0x67, 0x2B, 0xFE, 0xD7, 0xAB, 0x76,
@@ -19,7 +20,7 @@ s_box = (
     0x8C, 0xA1, 0x89, 0x0D, 0xBF, 0xE6, 0x42, 0x68, 0x41, 0x99, 0x2D, 0x0F, 0xB0, 0x54, 0xBB, 0x16,
 )
 
-def split_4bits(i: np.uint8) -> tuple[np.uint8, np.uint8]:
+def split_4bits(i: np.uint8) -> Tuple[np.uint8, np.uint8]:
     high = i >> 4
     low = i - (high << 4)
     return high, low
@@ -37,6 +38,21 @@ def F(subPT: np.ndarray, subMK: np.ndarray) -> np.ndarray:
     t3 = (x_low + k_low) % 16
     subPT[3] = merge_4bits(t3, t2)
     return subPT
+
+def generate_subF(j: int):
+    if j < 3:
+        def subF(i: int, k: int):
+            return s_box[i ^ k]
+    else:
+        def subF(i: int, k: int):
+            x_high, x_low = split_4bits(i)
+            k_high, k_low = split_4bits(k)
+            t1 = (x_low * k_high) % 16
+            t2 = t1 ^ x_high
+            t3 = (x_low + k_low) % 16
+            return merge_4bits(t3, t2)
+    return subF
+
 
 def rotate(row: list, n: int) -> list:
     return row[n:] + row[:n]
@@ -104,6 +120,16 @@ def parse_str(text: str) -> np.ndarray:
 
 def to_str(byte_array: np.ndarray) -> str:
     return ''.join(map(lambda i: f"{i:02X}", byte_array))
+
+
+def test_key(MK):
+    PT = parse_str(testPT)
+    CT_exp = encrypt(PT, MK)
+    print("exp", to_str(CT_exp))
+    CT_ans = parse_str(testCT)
+    print("ans", to_str(CT_ans))
+    return CT_exp == CT_ans
+
 
 def main():
     PT = parse_str(testPT)

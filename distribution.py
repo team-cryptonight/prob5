@@ -1,4 +1,3 @@
-from re import I
 import numpy as np
 import encrypt
 import matplotlib.pyplot as plt
@@ -34,6 +33,18 @@ def generate_distribution(func, leakage=leak):
             output_leaks[i] = leakage(o)
         results.append(output_leaks)
     return np.vstack(results)
+
+
+def generate_h_m_h_y(func, leakage=leak):
+    K, H = 256, 9
+    h_m_h_y = np.zeros((K, H, H), dtype=np.int32)
+    leaks = np.array(list(map(leakage, range(256))))  # (256,)
+    for k in range(256):
+        for i in range(256):
+            o = func(i, k)
+            h_m_h_y[k, leaks[i], leaks[o]] += 1
+    h_m_h_y = h_m_h_y / 256
+    return h_m_h_y
 
 
 def main():
