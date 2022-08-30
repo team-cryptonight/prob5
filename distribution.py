@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 # https://stackoverflow.com/questions/109023/how-to-count-the-number-of-set-bits-in-a-32-bit-integer
 def leak(i: int) -> int:
     """
-    Hamming weight of i (< 255)
+    Hamming weight of i (<= 255)
     """
     # i: 11100000
     i = i - ((i >> 1) & 0x55)  # i: 10010000
